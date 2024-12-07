@@ -1,0 +1,37 @@
+
+_id
+674b7eaa2970b06fd8c49d81
+spotId
+1
+creator
+"0x36fD41533d1c86225BDA5FB4E0bC0a8CD22D3180"
+username
+"arsh"
+name
+"Shaheen Restaurant"
+description
+"It's a very great Yemeni cuisine restaurant which is having the follow…"
+category
+"FOOD_BEVERAGES"
+
+location
+Object
+city
+"Phagwara"
+state
+"Punjab"
+fullAddress
+"Green Valley Plaza, Law Gate, Phagwara Punjab"
+latitude
+"31.25248022177644"
+longitude
+"75.69769177967262"
+
+photos
+Array (2)
+0
+"https://res.cloudinary.com/dpnixv4fk/image/upload/v1733000848/nctfuuil…"
+1
+"https://res.cloudinary.com/dpnixv4fk/image/upload/v1733000848/iwutb86s…"
+createdAt
+2024-11-30T21:07:54.069+00:00
