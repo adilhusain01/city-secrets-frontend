@@ -54,7 +54,7 @@ const Spot = () => {
   const fetchComments = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/comments/${spotId}`
+        `https://city-secrets-backend-6ptmq.ondigitalocean.app/api/comments/${spotId}`
       );
       setComments(response.data);
     } catch (error) {

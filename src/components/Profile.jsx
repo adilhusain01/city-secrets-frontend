@@ -10,6 +10,7 @@ const Profile = () => {
   const {
     account,
     userLevel,
+    userSpots,
     credibilityScore,
     loading,
     fetchUserSpots,

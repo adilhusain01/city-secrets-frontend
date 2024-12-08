@@ -53,9 +53,60 @@ const CreateSpot = ({ onClose }) => {
     setPreviewImages(previews);
   };
 
+  const validateStep1 = (data) => {
+    if (!data.name?.trim()) return "Spot name is required";
+    if (!data.description?.trim()) return "Description is required";
+    if (!data.category?.trim()) return "Category is required";
+    return null;
+  };
+
+  const validateStep2 = (data) => {
+    if (!data.city?.trim()) return "City is required";
+    if (!data.state?.trim()) return "State is required";
+    if (!data.address?.trim()) return "Address is required";
+    if (!data.latitude) return "Latitude is required";
+    if (!data.longitude) return "Longitude is required";
+    return null;
+  };
+
+  const validateStep3 = (data) => {
+    if (!data.photos || data.photos.length === 0) {
+      return "At least one photo is required";
+    }
+    return null;
+  };
+
+  const handleNextStep = () => {
+    let stepError = null;
+
+    if (currentStep === 1) {
+      stepError = validateStep1(spotData);
+    } else if (currentStep === 2) {
+      stepError = validateStep2(spotData);
+    }
+
+    if (stepError) {
+      setError(stepError);
+      return;
+    }
+
+    setError(null);
+    setCurrentStep(currentStep + 1);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+
+    // Validate all steps
+    const step1Error = validateStep1(spotData);
+    const step2Error = validateStep2(spotData);
+    const step3Error = validateStep3(spotData);
+
+    if (step1Error || step2Error || step3Error) {
+      setError(step1Error || step2Error || step3Error);
+      return;
+    }
 
     try {
       if (contractError) throw new Error(contractError);
@@ -63,7 +114,14 @@ const CreateSpot = ({ onClose }) => {
       if (!isRegisteredUser)
         throw new Error("Please register before creating a spot");
 
-      await createSpot(spotData);
+      // Format the data before sending
+      const formattedData = {
+        ...spotData,
+        latitude: parseFloat(spotData.latitude),
+        longitude: parseFloat(spotData.longitude),
+      };
+
+      await createSpot(formattedData);
       onClose();
     } catch (error) {
       setError(error.message);
@@ -181,7 +239,6 @@ const CreateSpot = ({ onClose }) => {
                     }
                     className="p-2 mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     placeholder="Enter spot name"
-                    required
                   />
                 </label>
 
@@ -195,7 +252,6 @@ const CreateSpot = ({ onClose }) => {
                     className="p-2 mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     rows="4"
                     placeholder="Describe your secret spot"
-                    required
                   />
                 </label>
 
@@ -208,7 +264,6 @@ const CreateSpot = ({ onClose }) => {
                         setSpotData({ ...spotData, category: e.target.value })
                       }
                       className="p-2 block w-full appearance-none rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                      required
                     >
                       {Object.entries(categories).map(
                         ([value, { icon, label }]) => (
@@ -243,7 +298,6 @@ const CreateSpot = ({ onClose }) => {
                       setSpotData({ ...spotData, city: e.target.value })
                     }
                     className="p-2 mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    required
                   />
                 </label>
 
@@ -256,7 +310,6 @@ const CreateSpot = ({ onClose }) => {
                       setSpotData({ ...spotData, state: e.target.value })
                     }
                     className="p-2 mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    required
                   />
                 </label>
               </div>
@@ -270,7 +323,6 @@ const CreateSpot = ({ onClose }) => {
                     setSpotData({ ...spotData, address: e.target.value })
                   }
                   className="p-2 mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  required
                 />
               </label>
 
@@ -285,7 +337,6 @@ const CreateSpot = ({ onClose }) => {
                       setSpotData({ ...spotData, latitude: e.target.value })
                     }
                     className="p-2 mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    required
                   />
                 </label>
 
@@ -299,7 +350,6 @@ const CreateSpot = ({ onClose }) => {
                       setSpotData({ ...spotData, longitude: e.target.value })
                     }
                     className="p-2 mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    required
                   />
                 </label>
               </div>
@@ -385,7 +435,7 @@ const CreateSpot = ({ onClose }) => {
           {currentStep < 3 ? (
             <button
               type="button"
-              onClick={() => setCurrentStep(currentStep + 1)}
+              onClick={handleNextStep}
               className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
             >
               Next

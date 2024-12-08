@@ -122,6 +122,44 @@ export const SecretSpotsProvider = ({ children }) => {
   // Create spot
   const createSpot = async (spotData) => {
     try {
+      setLoading(true);
+      setContractError(null);
+
+      const requiredFields = [
+        "name",
+        "description",
+        "category",
+        "city",
+        "state",
+        "address",
+        "latitude",
+        "longitude",
+      ];
+
+      const missingFields = requiredFields.filter((field) => !spotData[field]);
+
+      if (missingFields.length > 0) {
+        throw new Error(
+          `Missing required fields: \${missingFields.join(', ')}`
+        );
+      }
+
+      // Validate photos array (if required)
+      if (!spotData.photos || spotData.photos.length === 0) {
+        throw new Error("At least one photo is required");
+      }
+
+      const { name, description, category, city, state, address, photos } =
+        spotData;
+
+      // Convert coordinates to the format expected by your contract
+      const latitude = parseFloat(spotData.latitude);
+      const longitude = parseFloat(spotData.longitude);
+
+      if (isNaN(latitude) || isNaN(longitude)) {
+        throw new Error("Invalid coordinates");
+      }
+
       if (!contract) {
         throw new Error(
           "Contract not initialized. Please connect your wallet."
@@ -137,23 +175,6 @@ export const SecretSpotsProvider = ({ children }) => {
       }
 
       setLoading(true);
-
-      const {
-        name,
-        description,
-        category,
-        city,
-        state,
-        address,
-        latitude,
-        longitude,
-        photos,
-      } = spotData;
-
-      // Validate inputs
-      if (!name || !description || !category || !city || !photos.length) {
-        throw new Error("Please fill in all required fields");
-      }
 
       // Upload photos
       const formData = new FormData();
@@ -338,6 +359,7 @@ export const SecretSpotsProvider = ({ children }) => {
         username,
       });
       await fetchSpots();
+      await fetchUserSpots();
       setLoading(false);
       toast.success("Comment added successfully");
     } catch (error) {
