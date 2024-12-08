@@ -101,58 +101,62 @@ const Spot = () => {
     setIsModalOpen(false);
   };
 
-  if (!spotData)
+  if (!spotData) {
     return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-black">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="w-16 h-16 border-4 border-[#8a090a] border-t-yellow-500 rounded-full"
-        />
+      <div className="min-h-screen w-full flex items-center justify-center bg-[#030712]">
+        <div className="relative">
+          <div className="w-16 h-16 rounded-full border-2 border-transparent animate-pulse bg-gradient-to-r from-violet-500 via-cyan-500 to-violet-500 p-[2px]">
+            <div className="w-full h-full rounded-full bg-[#030712]" />
+          </div>
+          <div className="absolute inset-0 blur-xl bg-gradient-to-r from-violet-500 via-cyan-500 to-violet-500 opacity-20 animate-pulse" />
+        </div>
       </div>
     );
+  }
 
   const mainPhoto = spotData.photos?.[0];
   const otherPhotos = spotData.photos?.slice(1);
 
   return (
-    <div className="min-h-screen py-8 bg-gradient-to-b from-black to-gray-900">
-      <div className="max-w-5xl mx-auto px-4">
-        {/* Back button */}
+    <div className="min-h-screen py-8 bg-[#030712] bg-grid-white/[0.02]">
+      <div className="max-w-6xl mx-auto px-4 relative z-10">
+        {/* Navigation */}
         <button
           onClick={() => navigate(-1)}
-          className="mt-28 px-6 py-2 mb-6 flex items-center gap-2 text-white bg-[#8a090a] hover:bg-[#a01011] transition-all duration-300 rounded-md border-2 border-[#8a090a]"
+          className="mt-28 mb-6 group flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
         >
-          <ArrowLeft className="w-5 h-5" />
-          <span>Back</span>
+          <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
+          <span className="text-sm font-medium">Back to Spots</span>
         </button>
 
         {/* Header */}
-        <div className="flex justify-between items-start mb-6">
-          <h2 className="text-3xl font-bold text-yellow-500">
-            {spotData.name}
-          </h2>
-        </div>
+        <h1 className="text-4xl font-bold bg-yellow-500 bg-clip-text text-transparent mb-8">
+          {spotData.name}
+        </h1>
 
-        {/* Main Photo Gallery */}
-        <div className="relative h-96 mb-8 rounded-md overflow-hidden border-2 border-[#8a090a]">
+        {/* Main Photo */}
+        <div className="relative group rounded-2xl overflow-hidden mb-8 border border-white/10">
           <motion.img
             src={mainPhoto}
             alt={spotData.name}
-            className="w-full h-full object-cover cursor-pointer"
+            className="w-full h-[500px] object-cover cursor-pointer transition-transform duration-500 group-hover:scale-105"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
             onClick={() => openModal(0)}
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+          {/* Photo Navigation */}
           {spotData.photos?.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
               {spotData.photos.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setActivePhotoIndex(index)}
-                  className={`w-2 h-2 rounded-full \${
-                    index === activePhotoIndex ? "bg-yellow-500" : "bg-white/50"
+                  className={`w-2 h-2 rounded-full transition-all duration-300 \${
+                    index === activePhotoIndex 
+                      ? "bg-white w-6" 
+                      : "bg-white/50 hover:bg-white/75"
                   }`}
                 />
               ))}
@@ -160,205 +164,145 @@ const Spot = () => {
           )}
         </div>
 
-        {/* Other Photos Grid */}
-        {otherPhotos?.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-            {otherPhotos.map((photo, index) => (
-              <motion.div
-                key={index}
-                className="relative h-64 rounded-md overflow-hidden cursor-pointer border-2 border-[#8a090a]"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                onClick={() => openModal(index + 1)}
-              >
-                <img
-                  src={photo}
-                  alt={`\${spotData.name} \${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </motion.div>
-            ))}
-          </div>
-        )}
-
         {/* Content Grid */}
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Left Column - Details */}
-          <div className="space-y-6">
-            <div className="bg-black border-2 border-[#8a090a] p-6 rounded-md shadow-[0_0_15px_rgba(138,9,10,0.3)]">
-              <h3 className="text-xl font-semibold mb-4 text-yellow-500">
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Main Info */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+              <h2 className="text-xl font-semibold text-white mb-4">
                 About this spot
-              </h3>
-              <p className="text-white">{spotData.description}</p>
+              </h2>
+              <p className="text-gray-300 leading-relaxed">
+                {spotData.description}
+              </p>
             </div>
 
-            <div className="bg-black border-2 border-[#8a090a] p-6 rounded-md shadow-[0_0_15px_rgba(138,9,10,0.3)]">
-              <h3 className="text-xl font-semibold text-yellow-500">
+            {/* Location Card */}
+            <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+              <h2 className="text-xl font-semibold text-white mb-4">
                 Location Details
-              </h3>
-              <div className="grid grid-cols-2 gap-4 mt-4">
-                <div>
-                  <p className="text-sm text-gray-400">Latitude</p>
-                  <p className="font-medium text-white">
-                    {spotData.location.latitude}
+              </h2>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <p className="text-sm text-gray-400">Coordinates</p>
+                  <p className="font-mono text-cyan-500">
+                    {spotData.location.latitude}, {spotData.location.longitude}
                   </p>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-400">Longitude</p>
-                  <p className="font-medium text-white">
-                    {spotData.location.longitude}
-                  </p>
-                </div>
-                <div className="col-span-2">
-                  <p className="text-sm text-gray-400">Address</p>
-                  <p className="font-medium text-white">
-                    {spotData.location.fullAddress}
-                  </p>
-                </div>
-                <div className="col-span-2">
+                <div className="space-y-1">
                   <p className="text-sm text-gray-400">City</p>
-                  <p className="font-medium text-white">
-                    {spotData.location.city + ", " + spotData.location.state}
+                  <p className="text-white">
+                    {spotData.location.city}, {spotData.location.state}
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column - Stats & Actions */}
+          {/* Sidebar */}
           <div className="space-y-6">
-            <div className="bg-black border-2 border-[#8a090a] p-6 rounded-md shadow-[0_0_15px_rgba(138,9,10,0.3)]">
-              <h3 className="text-xl font-semibold mb-4 text-yellow-500">
-                Creator Info
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <User className="w-5 h-5 text-[#8a090a]" />
-                  <span className="font-medium text-white">
-                    {spotData.creator.slice(0, 6) +
-                      "..." +
-                      spotData.creator.slice(-4)}
-                  </span>
+            {/* Creator Info */}
+            <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+              <h2 className="text-xl font-semibold text-white mb-4">Creator</h2>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 flex items-center justify-center">
+                  <User className="w-5 h-5 text-white" />
                 </div>
-                <div className="flex items-center gap-3">
-                  <Calendar className="w-5 h-5 text-[#8a090a]" />
-                  <span className="text-white">
+                <div>
+                  <p className="text-white font-medium">
+                    {spotData.creator.slice(0, 6)}...
+                    {spotData.creator.slice(-4)}
+                  </p>
+                  <p className="text-sm text-gray-400">
                     {new Date(spotData.createdAt).toLocaleDateString()}
-                  </span>
+                  </p>
                 </div>
               </div>
             </div>
 
             {/* Voting Section */}
-            <div className="bg-black border-2 border-[#8a090a] p-6 rounded-md shadow-[0_0_15px_rgba(138,9,10,0.3)]">
-              <h3 className="text-xl font-semibold mb-4 text-yellow-500">
-                Vote for this spot
-              </h3>
-              <div className="flex gap-4">
+            <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+              <h2 className="text-xl font-semibold text-white mb-4">Vote</h2>
+              <div className="grid grid-cols-2 gap-4">
                 <button
                   onClick={() => handleVote(true)}
                   disabled={loading}
-                  className="flex-1 bg-[#8a090a] text-white px-6 py-3 rounded-md flex items-center justify-center gap-2 hover:bg-[#a01011] disabled:bg-gray-600 transition-colors border-2 border-[#8a090a]"
+                  className="flex flex-col items-center gap-2 p-4 rounded-xl bg-gradient-to-r from-violet-500 to-violet-600 hover:from-violet-600 hover:to-violet-700 transition-all disabled:opacity-50"
                 >
-                  <ThumbsUp className="w-5 h-5" />
-                  <span>{spotData.upvotes || 0}</span>
+                  <ThumbsUp className="w-6 h-6 text-white" />
+                  <span className="text-white font-medium">
+                    {spotData.upvotes || 0}
+                  </span>
                 </button>
                 <button
                   onClick={() => handleVote(false)}
                   disabled={loading}
-                  className="flex-1 bg-[#8a090a] text-white px-6 py-3 rounded-md flex items-center justify-center gap-2 hover:bg-[#a01011] disabled:bg-gray-600 transition-colors border-2 border-[#8a090a]"
+                  className="flex flex-col items-center gap-2 p-4 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 transition-all disabled:opacity-50"
                 >
-                  <ThumbsDown className="w-5 h-5" />
-                  <span>{spotData.downvotes || 0}</span>
+                  <ThumbsDown className="w-6 h-6 text-white" />
+                  <span className="text-white font-medium">
+                    {spotData.downvotes || 0}
+                  </span>
                 </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Comments Section */}
-      <div className="max-w-5xl mx-auto px-4 mt-16">
-        <h3 className="text-2xl font-semibold mb-4 text-yellow-500">
-          Comments
-        </h3>
+        {/* Comments Section */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-semibold text-white mb-6">Comments</h2>
 
-        {/* Comment Form */}
-        {account && account !== spotData.creator && (
-          <form onSubmit={handleCommentSubmit} className="mb-6">
-            <div className="flex gap-2">
-              <textarea
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Add a comment..."
-                className="flex-1 p-3 bg-black border-2 border-[#8a090a] rounded-md resize-none focus:outline-none focus:border-yellow-500 text-white placeholder-gray-500"
-                rows="2"
-              />
-              <button
-                type="submit"
-                disabled={!newComment.trim()}
-                className="px-6 py-2 bg-[#8a090a] text-white rounded-md hover:bg-[#a01011] disabled:bg-gray-600 disabled:cursor-not-allowed border-2 border-[#8a090a]"
-              >
-                Post
-              </button>
-            </div>
-          </form>
-        )}
-
-        {/* Comments List */}
-        <div className="space-y-4 mb-20">
-          {comments.length === 0 ? (
-            <p className="text-gray-400">No comments yet.</p>
-          ) : (
-            comments.map((comment) => (
-              <div
-                key={comment._id}
-                className="bg-black border-2 border-[#8a090a] p-4 rounded-md shadow-[0_0_15px_rgba(138,9,10,0.3)]"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="font-medium text-yellow-500">
-                    @{comment.username}
-                  </span>
-                  <span className="text-gray-400 text-sm">
-                    {new Date(comment.createdAt).toLocaleDateString()}
-                  </span>
-                </div>
-                <p className="text-white">{comment.content}</p>
+          {/* Comment Form */}
+          {account && account !== spotData.creator && (
+            <form onSubmit={handleCommentSubmit} className="mb-8">
+              <div className="flex gap-4">
+                <textarea
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Share your thoughts..."
+                  className="flex-1 bg-white/5 backdrop-blur-xl rounded-xl p-4 border border-white/10 text-white placeholder-gray-400 focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all resize-none"
+                  rows="3"
+                />
+                <button
+                  type="submit"
+                  disabled={!newComment.trim()}
+                  className="px-6 py-2 bg-gradient-to-r from-violet-500 to-cyan-500 rounded-xl text-white font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+                >
+                  Post
+                </button>
               </div>
-            ))
+            </form>
           )}
+
+          {/* Comments List */}
+          <div className="space-y-4">
+            {comments &&
+              comments.map((comment) => (
+                <div
+                  key={comment._id}
+                  className="bg-white/5 backdrop-blur-xl rounded-xl p-4 border border-white/10"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-violet-400 font-medium">
+                      @{comment.username}
+                    </span>
+                    <span className="text-gray-400 text-sm">
+                      {new Date(comment.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <p className="text-gray-300">{comment.content}</p>
+                </div>
+              ))}
+          </div>
         </div>
       </div>
 
-      {/* Photo Modal */}
-      {isModalOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-          onClick={closeModal}
-        >
-          <div className="relative max-w-4xl w-full">
-            <button
-              onClick={closeModal}
-              className="absolute top-2 right-2 text-white bg-[#8a090a] rounded-full p-2 hover:bg-[#a01011] transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            <motion.img
-              src={spotData.photos[activePhotoIndex]}
-              alt={spotData.name}
-              className="w-full h-full object-contain max-h-[90vh] rounded-md border-2 border-[#8a090a]"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-              onClick={(e) => e.stopPropagation()}
-            />
-          </div>
-        </motion.div>
-      )}
+      {/* Background Elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-b from-violet-500/10 via-transparent to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-[#030712] to-transparent" />
+      </div>
     </div>
   );
 };

@@ -313,6 +313,7 @@ export const SecretSpotsProvider = ({ children }) => {
       console.log("Vote successful!");
 
       await fetchSpots();
+      await fetchUserSpots();
       await checkUserRegistration(); // Update user's credibility score
       setLoading(false);
       toast.success("Vote submitted successfully");

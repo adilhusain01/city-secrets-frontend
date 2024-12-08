@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSecretSpots } from "../contexts/SecretSpotsContext";
 import SpotCard from "./SpotCard";
 import CreateSpot from "./CreateSpot";
-import { useWallet } from "../contexts/WalletContext";
 import { Search, Plus, Loader, MapPin, X, User } from "lucide-react";
 
 const Spots = () => {
@@ -16,7 +15,6 @@ const Spots = () => {
     isRegisteredUser,
     registerUser,
   } = useSecretSpots();
-  const { account, connectWallet } = useWallet();
   const [searchCity, setSearchCity] = useState("");
   const [error, setError] = useState(null);
   const [filteredSpots, setFilteredSpots] = useState([]);
@@ -43,7 +41,6 @@ const Spots = () => {
   };
 
   useEffect(() => {
-    connectWallet();
     fetchSpots();
   }, []);
 
@@ -88,11 +85,12 @@ const Spots = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-black to-gray-900">
+        {" "}
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
           className="w-16 h-16 border-4 border-[#8a090a] border-t-yellow-500 rounded-full"
-        />
+        />{" "}
       </div>
     );
   }
@@ -108,7 +106,7 @@ const Spots = () => {
         >
           <h2 className="text-2xl font-bold text-yellow-500 mb-4">Error</h2>
           <p className="text-white">{contractError}</p>
-        </motion.div>
+        </motion.div>{" "}
       </div>
     );
   }
@@ -123,7 +121,8 @@ const Spots = () => {
           className="bg-black border-2 border-[#8a090a] p-8 rounded-md shadow-[0_0_15px_rgba(138,9,10,0.3)] max-w-md w-full mx-4"
         >
           <h2 className="text-3xl font-bold text-yellow-500 mb-6 text-center">
-            Welcome to City Secrets
+            {" "}
+            Welcome to City Secrets{" "}
           </h2>
 
           <div className="space-y-4">
@@ -175,9 +174,9 @@ const Spots = () => {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 relative z-10"
+        className="w-full mx-auto px-[12.5rem] py-32 relative z-10"
       >
-        {/* Header Section */}
+        {/* Header Section */}{" "}
         <motion.div
           variants={itemVariants}
           className="flex flex-col md:flex-row gap-6 items-center justify-between"
@@ -218,7 +217,6 @@ const Spots = () => {
             </motion.button>
           </div>
         </motion.div>
-
         {/* Error Message */}
         <AnimatePresence>
           {error && (
@@ -238,7 +236,6 @@ const Spots = () => {
             </motion.div>
           )}
         </AnimatePresence>
-
         {/* Spots Grid or Empty State */}
         {loading ? (
           <div className="min-h-[40vh] flex justify-center items-center">
@@ -251,7 +248,7 @@ const Spots = () => {
         ) : filteredSpots.length > 0 ? (
           <motion.div
             variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-8"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-12"
           >
             {filteredSpots.map((spot) => (
               <motion.div key={spot.spotId} variants={itemVariants}>

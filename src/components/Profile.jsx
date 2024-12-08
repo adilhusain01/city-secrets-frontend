@@ -9,7 +9,6 @@ import { toast } from "react-hot-toast";
 const Profile = () => {
   const {
     account,
-    userSpots,
     userLevel,
     credibilityScore,
     loading,

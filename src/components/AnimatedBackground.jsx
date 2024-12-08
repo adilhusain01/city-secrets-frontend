@@ -63,10 +63,7 @@ const AnimatedBackground = () => {
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="hidden md:block w-full min-w-full h-full"
-    />
+    <div ref={containerRef} className="hidden md:block min-w-fit h-full" />
   );
 };
 
